@@ -32,7 +32,15 @@ def sentiment_analysis_example(documents):
     sentiments = response.json()
 
     print("Printing sentiments ... \n")
-    pprint(sentiments)
+    return sentiments
+
+def sentAnal_opMap(documents):
+	sentiment_url = endpoint + "/text/analytics/v3.1-preview.1/sentiment?opinionMining=true"
+	headers = {"Ocp-Apim-Subscription-Key": subscription_key}
+	response = requests.post(sentiment_url, headers=headers, json=documents)
+	sentiments = response.json()
+
+	print("Printing sentiments ... \n")
     return sentiments
 
 
