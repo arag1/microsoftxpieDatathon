@@ -2,6 +2,7 @@ import os
 import requests
 from pprint import pprint
 import pandas as pd
+import urllib.parse
 
 # Fill in your credentials
 #subscription_key = ''
@@ -35,12 +36,16 @@ def sentiment_analysis_example(documents):
     return sentiments
 
 def sentAnal_opMap(documents):
-	sentiment_url = endpoint + "/text/analytics/v3.1-preview.1/sentiment?opinionMining=true"
-	headers = {"Ocp-Apim-Subscription-Key": subscription_key}
-	response = requests.post(sentiment_url, headers=headers, json=documents)
-	sentiments = response.json()
-
-	print("Printing sentiments ... \n")
+    params = urllib.parse.urlencode({
+    # Request parameters
+    'model-version': 'latest',
+    'showStats': 'False',
+    'opinionMining': 'True'})
+    sentiment_url = endpoint + ("/text/analytics/v3.1-preview.1/sentiment?%s" % params)
+    headers = {"Ocp-Apim-Subscription-Key": subscription_key}
+    response = requests.post(sentiment_url, headers=headers, json=documents)
+    sentiments = response.json()
+    print("Printing sentiments ... \n")
     return sentiments
 
 
@@ -51,7 +56,6 @@ def extract_key_phrases(documents):
     key_phrases = response.json()
 
     print("Printing key phrases ... \n")
-    pprint(key_phrases)
     return key_phrases
 
 
@@ -63,12 +67,16 @@ def identify_entities(documents):
     pprint(entities)
 
 
-def convert_text_to_JSON(data):
+def convert_text_to_JSON(text):
     """
     Convert text data to the format required by the
     Text Analytics API. Example format included below in the main function.
     """
-    pass
+    documents = {"documents": [
+        {"id": "1", "language": "en",
+            "text": text}
+    ]}
+    return documents
 
 
 def parse_output(output_JSON):
